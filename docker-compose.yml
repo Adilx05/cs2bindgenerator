@@ -1,0 +1,5 @@
+services:
+  cs2-arsenal:
+    build: .
+    ports:
+      - "3000:3000"

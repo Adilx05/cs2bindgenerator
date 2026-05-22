@@ -1,0 +1,2 @@
+import weapons from '@/data/weapons.json';
+export default function Home(){return <div className='space-y-6'><section className='card'><h1 className='text-4xl font-bold'>CS2 Arsenal</h1><p>Weapon commands, bind generator, lineups, practice and crosshair tools.</p></section><section className='grid gap-3 md:grid-cols-3'>{[{k:'Commands',v:weapons.length},{k:'Bind Packs',v:4},{k:'Lineups',v:2}].map(s=><div key={s.k} className='card'><div className='text-slate-400'>{s.k}</div><div className='text-3xl font-bold text-cyan-400'>{s.v}</div></div>)}</section></div>;}
