@@ -1,0 +1,1 @@
+export default function About(){return <div className='card'><h1 className='text-3xl font-bold'>About CS2 Arsenal</h1><p>CS2 Arsenal is a static-first toolkit for commands, practice and utility workflows in Counter-Strike 2.</p></div>;}
