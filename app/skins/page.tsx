@@ -1,4 +1,0 @@
-'use client';
-import { useState } from 'react';
-import { CopyButton } from '@/components/copy-button';
-export default function Skins(){const [link,setLink]=useState('steam://rungame/730/');const [seed,setSeed]=useState('420');const [flt,setFlt]=useState('0.01');const out=`${link}?seed=${seed}&float=${flt}`;return <div className='space-y-4'><h1 className='text-3xl font-bold'>Skin Inspect Generator</h1><div className='card space-y-2'><input value={link} onChange={e=>setLink(e.target.value)} className='w-full rounded bg-slate-800 p-2'/><input value={seed} onChange={e=>setSeed(e.target.value)} className='w-full rounded bg-slate-800 p-2'/><input value={flt} onChange={e=>setFlt(e.target.value)} className='w-full rounded bg-slate-800 p-2'/><code className='block rounded bg-black/40 p-2'>{out}</code><CopyButton text={out}/></div></div>;}

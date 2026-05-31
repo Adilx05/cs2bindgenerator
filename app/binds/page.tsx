@@ -1,6 +1,17 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ChevronDown,
+  ChevronRight,
+  Keyboard,
+  Crosshair,
+  Code2,
+  Check,
+  Package,
+  ShoppingCart
+} from 'lucide-react';
 import { CopyButton } from '@/components/copy-button';
 
 type BuyItem = { id: string; name: string; cmd: string; image: string };
@@ -62,46 +73,292 @@ const utility: BuyItem[] = [
   { id: 'incendiary', name: 'Incendiary Grenade', cmd: 'buy incgrenade', image: '/weapon-icons/incendiary.svg' },
   { id: 'decoy', name: 'Decoy Grenade', cmd: 'buy decoy', image: '/weapon-icons/decoy.svg' },
   { id: 'zeus', name: 'Zeus x27', cmd: 'buy taser', image: '/weapon-icons/zeus.svg' },
-  { id: 'defuse', name: 'Defuse Kit', cmd: 'buy defuser', image: '/weapon-icons/defuse.svg' }
+  { id: 'defuse', name: 'Defuse Kit', cmd: 'buy defuser', image: '/weapon-icons/defuse.svg' },
+  { id: 'kevlar', name: 'Kevlar Vest', cmd: 'buy vest', image: '/weapon-icons/kevlar.svg' },
+  { id: 'helmet', name: 'Kevlar + Helmet', cmd: 'buy vesthelm', image: '/weapon-icons/helmet.svg' }
 ];
 
-const keyboardRows = [['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'], ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'], ['Z', 'X', 'C', 'V', 'B', 'N', 'M'], ['KP_1', 'KP_2', 'KP_3', 'KP_4', 'KP_5', 'KP_6', 'KP_7', 'KP_8', 'KP_9', 'KP_0']];
+const keyboardRows = [
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+  ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
+  ['KP_1', 'KP_2', 'KP_3', 'KP_4', 'KP_5', 'KP_6', 'KP_7', 'KP_8', 'KP_9', 'KP_0']
+];
 
 const allWeapons = [...rifles, ...snipers, ...smgs, ...heavy, ...pistols, ...utility];
+
+const sections = [
+  { title: 'Rifles', items: rifles, icon: Crosshair },
+  { title: 'Sniper Rifles', items: snipers, icon: Crosshair },
+  { title: 'SMGs', items: smgs, icon: Crosshair },
+  { title: 'Heavy', items: heavy, icon: Crosshair },
+  { title: 'Pistols', items: pistols, icon: Crosshair },
+  { title: 'Utility & Gear', items: utility, icon: Package }
+] as const;
+
+const sectionColors: Record<string, string> = {
+  Rifles: 'from-blue-500/10 to-blue-500/5 border-blue-500/20',
+  'Sniper Rifles': 'from-purple-500/10 to-purple-500/5 border-purple-500/20',
+  SMGs: 'from-green-500/10 to-green-500/5 border-green-500/20',
+  Heavy: 'from-red-500/10 to-red-500/5 border-red-500/20',
+  Pistols: 'from-orange-500/10 to-orange-500/5 border-orange-500/20',
+  'Utility & Gear': 'from-cyan-500/10 to-cyan-500/5 border-cyan-500/20'
+};
 
 export default function BindsPage() {
   const [selectedKey, setSelectedKey] = useState('KP_1');
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
 
-  const commands = useMemo(() => allWeapons.filter((w) => selectedItems.includes(w.id)).map((w) => w.cmd), [selectedItems]);
-  const bindCommand = useMemo(() => `bind "${selectedKey}" "${commands.join('; ')}"`, [selectedKey, commands]);
-
-  const toggle = (id: string) => setSelectedItems((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
-
-  const section = (title: string, items: BuyItem[]) => (
-    <section className='card space-y-3'>
-      <h2 className='text-xl font-semibold text-slate-800'>{title}</h2>
-      <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
-        {items.map((w) => (
-          <button key={w.id} onClick={() => toggle(w.id)} className={`overflow-hidden rounded-xl border text-left ${selectedItems.includes(w.id) ? 'border-amber-400 ring-2 ring-amber-300' : 'border-amber-100'}`}>
-            <img src={w.image} alt={w.name} className='h-28 w-full object-contain bg-slate-100 p-3' />
-            <div className='p-2 font-medium text-slate-700'>{w.name}</div>
-          </button>
-        ))}
-      </div>
-    </section>
+  const commands = useMemo(
+    () => allWeapons.filter((w) => selectedItems.includes(w.id)).map((w) => w.cmd),
+    [selectedItems]
+  );
+  const bindCommand = useMemo(
+    () => `bind "${selectedKey}" "${commands.join('; ')}"`,
+    [selectedKey, commands]
   );
 
-  return <div className='space-y-6'>
-    <h1 className='text-3xl font-bold text-slate-800'>CS2 Buy Bind Generator</h1>
-    <p className='text-slate-600'>Select weapons and utility, choose a key, and copy your bind command.</p>
-    {section('Rifles', rifles)}
-    {section('Sniper Rifles', snipers)}
-    {section('SMGs', smgs)}
-    {section('Heavy', heavy)}
-    {section('Pistols', pistols)}
-    {section('Utility & Gear', utility)}
-    <section className='card space-y-3'><h2 className='text-xl font-semibold text-slate-800'>Bind Key</h2><div className='space-y-2'>{keyboardRows.map((row, i) => <div key={i} className='flex flex-wrap gap-2'>{row.map((k) => <button key={k} onClick={() => setSelectedKey(k)} className={`min-w-12 rounded-lg border px-3 py-2 text-sm ${selectedKey === k ? 'border-amber-500 bg-amber-300 text-slate-900' : 'border-amber-100 bg-white text-slate-700'}`}>{k}</button>)}</div>)}</div></section>
-    <section className='card space-y-3'><h2 className='text-xl font-semibold text-slate-800'>Generated Command</h2><code className='block rounded-xl bg-amber-50 p-3 text-sm text-slate-800'>{bindCommand}</code><CopyButton text={bindCommand} /></section>
-  </div>;
+  const toggle = (id: string) =>
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+
+  const toggleSection = (title: string) =>
+    setCollapsedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(title)) next.delete(title);
+      else next.add(title);
+      return next;
+    });
+
+  return (
+    <div className="space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center space-y-4"
+      >
+        <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 border border-[rgba(245,158,11,0.2)] px-4 py-1.5 text-xs font-medium text-amber-400">
+          <ShoppingCart className="h-3 w-3" />
+          Interactive Bind Generator
+        </div>
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+          <span className="text-gradient">Buy Bind</span>{' '}
+          <span className="text-[#e2e8f0]">Generator</span>
+        </h1>
+        <p className="text-[#94a3b8] max-w-2xl mx-auto text-lg">
+          Select weapons and utilities, choose a keybind, and generate a ready-to-use
+          CS2 bind command.
+        </p>
+      </motion.div>
+
+      <div className="flex flex-wrap items-center gap-3 justify-center">
+        <div className="glass-card px-4 py-2 text-sm text-[#94a3b8] flex items-center gap-2">
+          <ShoppingCart className="h-4 w-4 text-amber-400" />
+          <span>
+            <span className="text-amber-400 font-semibold">{selectedItems.length}</span> weapons
+            selected
+          </span>
+        </div>
+        <div className="glass-card px-4 py-2 text-sm text-[#94a3b8] flex items-center gap-2">
+          <Keyboard className="h-4 w-4 text-amber-400" />
+          <span>
+            Key: <span className="text-amber-400 font-semibold">{selectedKey}</span>
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {sections.map(({ title, items, icon: Icon }) => {
+          const isCollapsed = collapsedSections.has(title);
+          const selectedCount = items.filter((w) => selectedItems.includes(w.id)).length;
+          return (
+            <motion.div
+              key={title}
+              layout
+              className={`glass-card overflow-hidden border ${sectionColors[title] || 'border-amber-500/10'}`}
+            >
+              <button
+                onClick={() => toggleSection(title)}
+                className="flex w-full items-center justify-between px-5 py-3.5 text-left transition-colors hover:bg-white/[0.02]"
+              >
+                <div className="flex items-center gap-3">
+                  <Icon className="h-4 w-4 text-amber-400" />
+                  <span className="font-semibold text-[#e2e8f0]">{title}</span>
+                  {selectedCount > 0 && (
+                    <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400">
+                      {selectedCount}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-[#94a3b8]">
+                  <span className="text-xs">{items.length} items</span>
+                  {isCollapsed ? (
+                    <ChevronRight className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </div>
+              </button>
+              <AnimatePresence initial={false}>
+                {!isCollapsed && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 px-5 pb-5">
+                      {items.map((w, idx) => {
+                        const isSelected = selectedItems.includes(w.id);
+                        return (
+                          <motion.button
+                            key={w.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.03 }}
+                            onClick={() => toggle(w.id)}
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            className={`relative overflow-hidden rounded-xl border transition-all duration-200 ${
+                              isSelected
+                                ? 'border-amber-500/60 bg-amber-500/10 amber-glow-sm'
+                                : 'border-[rgba(245,158,11,0.08)] bg-[#1a1a28]/50 hover:border-[rgba(245,158,11,0.2)] hover:bg-[#1a1a28]'
+                            }`}
+                          >
+                            <div className="h-24 sm:h-28 flex items-center justify-center p-3 bg-[#0a0a0f]/50">
+                              <img
+                                src={w.image}
+                                alt={w.name}
+                                className="h-full w-full object-contain drop-shadow-lg"
+                              />
+                            </div>
+                            <div className="flex items-center justify-between px-3 py-2">
+                              <span className="text-sm font-medium text-[#e2e8f0]">
+                                {w.name}
+                              </span>
+                              {isSelected && (
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  className="rounded-full bg-amber-500 p-0.5"
+                                >
+                                  <Check className="h-3 w-3 text-[#0a0a0f]" />
+                                </motion.div>
+                              )}
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      <motion.div
+        layout
+        className="glass-card p-6 space-y-5"
+      >
+        <div className="flex items-center gap-3">
+          <Keyboard className="h-5 w-5 text-amber-400" />
+          <h2 className="text-xl font-bold text-[#e2e8f0]">Bind Configuration</h2>
+        </div>
+
+        <div className="space-y-3">
+          <label className="text-sm font-medium text-[#94a3b8] flex items-center gap-2">
+            <Keyboard className="h-3.5 w-3.5" />
+            Select Bind Key
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {keyboardRows.map((row, i) => (
+              <div key={i} className="flex flex-wrap gap-1.5">
+                {row.map((k) => {
+                  const isNumpad = k.startsWith('KP_');
+                  const displayKey = isNumpad ? k.replace('KP_', 'N') : k;
+                  const isSelected = selectedKey === k;
+                  return (
+                    <motion.button
+                      key={k}
+                      onClick={() => setSelectedKey(k)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`relative rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-all duration-150 ${
+                        isNumpad
+                          ? 'text-[#94a3b8] border-[rgba(245,158,11,0.1)] bg-[#1a1a28]/50'
+                          : 'text-[#e2e8f0] border-[rgba(245,158,11,0.1)] bg-[#1a1a28]/50'
+                      } ${
+                        isSelected
+                          ? 'border-amber-500/60 bg-amber-500/15 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.15)]'
+                          : 'hover:border-[rgba(245,158,11,0.3)] hover:bg-[#1a1a28]'
+                      }`}
+                    >
+                      {displayKey}
+                    </motion.button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <label className="text-sm font-medium text-[#94a3b8] flex items-center gap-2">
+            <Code2 className="h-3.5 w-3.5" />
+            Generated Command
+          </label>
+          <div className="terminal p-4 relative group">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
+              <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
+              <div className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
+              <span className="text-[#4a5568] text-xs ml-1">terminal</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-emerald-400 shrink-0 select-none">$</span>
+              <code className="text-[#e2e8f0] break-all leading-relaxed">
+                {commands.length === 0 ? (
+                  <span className="text-[#4a5568] italic">
+                    Select weapons above to generate a bind command...
+                  </span>
+                ) : (
+                  <span>
+                    <span className="text-cyan-400">bind</span>{' '}
+                    <span className="text-amber-400">&quot;{selectedKey}&quot;</span>{' '}
+                    <span className="text-green-400">&quot;</span>
+                    {commands.map((cmd, i) => (
+                      <span key={cmd}>
+                        {i > 0 && <span className="text-[#4a5568]">; </span>}
+                        <span className="text-[#e2e8f0]">{cmd}</span>
+                      </span>
+                    ))}
+                    <span className="text-green-400">&quot;</span>
+                  </span>
+                )}
+              </code>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <CopyButton text={bindCommand} />
+          {commands.length > 0 && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onClick={() => setSelectedItems([])}
+              className="rounded-lg px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-red-400 hover:bg-red-500/10 border border-[rgba(245,158,11,0.08)] hover:border-red-500/20 transition-all duration-200"
+            >
+              Clear All
+            </motion.button>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
 }

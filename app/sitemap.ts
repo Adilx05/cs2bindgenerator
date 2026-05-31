@@ -4,13 +4,7 @@ export const dynamic = 'force-static';
 
 const routes = [
   '',
-  '/commands',
   '/binds',
-  '/crosshair',
-  '/cfg-generator',
-  '/practice',
-  '/lineups',
-  '/skins',
   '/about'
 ];
 

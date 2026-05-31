@@ -1,2 +1,0 @@
-import lineups from '@/data/lineups.json';
-export default function Lineups(){return <div className='space-y-4'><h1 className='text-3xl font-bold'>Smoke Lineups</h1><div className='grid gap-3 md:grid-cols-2'>{(lineups as any[]).map(l=><div key={l.id} className='card'><h2 className='font-semibold'>{l.map} - {l.name}</h2><p>{l.description}</p><p className='text-sm text-slate-400'>{l.throwType} | {l.tickrate} | {l.difficulty}</p></div>)}</div></div>;}

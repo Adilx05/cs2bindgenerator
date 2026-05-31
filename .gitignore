@@ -1,0 +1,90 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.cache
+*.pdb
+*.obj
+*.exe
+*.dll
+*.log
+*.db
+*.zip
+*.tar.gz
+*.7z
+*.tmp
+*.tmp_proj
+*.pidb
+*.mdb
+*.class
+*.jar
+*.war
+*.ear
+*.lock
+*.orig
+*.swp
+*.swo
+
+# Build directories
+bin/
+obj/
+out/
+build/
+dist/
+
+# NuGet
+*.nupkg
+packages/
+*.snupkg
+
+# Rider
+.idea/
+*.sln.iml
+
+# User-specific files
+*.user
+*.userprefs
+*.suo
+*.sdf
+*.dbmdl
+
+# OS generated
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Claude folder
+.claude/
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment files
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# Misc
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
