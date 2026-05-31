@@ -13,6 +13,7 @@ import {
   ShoppingCart
 } from 'lucide-react';
 import { CopyButton } from '@/components/copy-button';
+import { asset } from '@/lib/paths';
 
 type BuyItem = { id: string; name: string; cmd: string; image: string };
 
@@ -230,7 +231,7 @@ export default function BindsPage() {
                           >
                             <div className="h-24 sm:h-28 flex items-center justify-center p-3 bg-[#0a0a0f]/50">
                               <img
-                                src={w.image}
+                                src={asset(w.image)}
                                 alt={w.name}
                                 className="h-full w-full object-contain drop-shadow-lg"
                               />
