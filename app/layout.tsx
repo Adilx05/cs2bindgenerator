@@ -5,11 +5,13 @@ import { Navbar } from '@/components/navbar';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const basePath = process.env.NODE_ENV === 'production' ? '/cs2bindgenerator' : '';
+
 export const metadata: Metadata = {
   title: 'CS2 Arsenal - CS2 Utility Toolkit',
   description:
     'Create buy binds, browse weapon commands, generate crosshairs, and explore smoke lineups for Counter-Strike 2.',
-  icons: [{ rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' }]
+  icons: [{ rel: 'icon', url: `${basePath}/favicon.svg`, type: 'image/svg+xml' }]
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
