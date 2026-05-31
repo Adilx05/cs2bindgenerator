@@ -1,40 +1,63 @@
-# CS2 Arsenal
+# CS2 Bind Generator
 
-Premium static CS2 utility site built with Next.js 15.
+A modern, dark-themed CS2 buy bind generator built with Next.js 15. Created by **QWRpbA==**.
 
 ## Features
-- Weapon command database with search/filter/copy
-- Bind generator + premade packs
-- CFG generator
-- Crosshair presets and code copy
-- Practice launch options and helpers
-- Smoke lineups listing
-- Skin inspect URL generator
-- Static export + GitHub Pages workflow
 
-## Screenshots
-Add screenshots from local run for home/commands/binds pages.
+- **Buy Bind Generator** — Select weapons, utility, and armor; pick a key; generate ready-to-use CS2 bind commands
+- **Interactive Weapon Grid** — 44 weapons + equipment with realistic CS2-style SVG silhouettes
+- **Kevlar & Helmet Support** — Full armor loadout options included
+- **Dark CS2 Theme** — Premium dark UI with amber/gold accents, glass-morphism cards, terminal-style output
+- **Framer Motion Animations** — Smooth transitions, collapsible sections, hover effects
+- **Static Export** — Fully client-side, no backend required
 
 ## Install
+
 ```bash
 npm install
 npm run dev
 ```
 
-## Docker
+## Build
+
 ```bash
-docker compose up --build
+npm run build
 ```
 
+Static output in `out/` — ready for GitHub Pages or any static host.
+
 ## Deployment
-- GitHub Pages via `.github/workflows/deploy-pages.yml`
-- Vercel supported via `vercel.json`
+
+- **GitHub Pages**: Push to `main`, workflow at `.github/workflows/deploy-pages.yml` auto-deploys
+- **Vercel**: Supported via `vercel.json`
 
 ## Structure
-- `app/` pages and routes
-- `components/` reusable UI
-- `data/` JSON data layer
-- `lib/` typed schemas
 
-## Contributing
-Fork, branch, commit with clear messages, open PR.
+```
+app/
+  binds/       Buy bind generator (homepage)
+  about/       About page
+  layout.tsx   Root layout with navbar
+components/
+  navbar.tsx   Sticky nav with mobile hamburger menu
+  copy-button.tsx  Reusable copy button
+public/
+  weapon-icons/  44 weapon/equipment SVG silhouettes
+  favicon.svg    CS2 crosshair favicon
+lib/
+  paths.ts     Asset path helper (GitHub Pages basePath support)
+  types.ts     TypeScript type definitions
+data/
+  weapons.json    Weapon data
+  crosshairs.json Pro crosshair presets
+  lineups.json    Smoke lineups
+  binds.json      Bind presets
+```
+
+## Tech Stack
+
+Next.js 15 · React 19 · TypeScript · Tailwind CSS 3 · Framer Motion · Lucide React
+
+## License
+
+MIT
